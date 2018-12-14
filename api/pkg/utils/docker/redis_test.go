@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestRunRedis(t *testing.T) {
@@ -21,29 +22,22 @@ func TestRunRedis(t *testing.T) {
 	client := redis.NewClient(opts)
 
 	// try get empty key
-	if err := client.Get("key").Err(); err != redis.Nil {
-		t.Error("should be nil error")
-	}
+	err = client.Get("key").Err()
+	assert.Equal(t, err, redis.Nil)
 
 	// set something
-	if err := client.Set("key", "something", time.Hour).Err(); err != nil {
-		t.Error(err)
-	}
+	err = client.Set("key", "something", time.Hour).Err()
+	assert.Nil(t, err)
 
 	// read from key
-	if val, err := client.Get("key").Result(); err != nil {
-		t.Error(err)
-	} else {
-		if val != "something" {
-			t.Error("val should equals something")
-		}
-	}
+	val, err := client.Get("key").Result()
+	assert.Nil(t, err)
+	assert.Equal(t, val, "something")
 
 	// destroy container
 	close()
 
 	// read again
-	if err := client.Get("key").Err(); err == nil {
-		t.Error("should be error")
-	}
+	err = client.Get("key").Err()
+	assert.NotNil(t, err)
 }
