@@ -6,9 +6,9 @@ class CreateTableUser < ActiveRecord::Migration[5.2]
         username varchar(100) not null,
         encrypted_password varchar(200) not null,
         email varchar(500) not null,
-        created_at timestamptz default now(),
-        updated_at timestamptz default now(),
-        deleted_at timestamptz default now()
+        created_at timestamptz not null default now(),
+        updated_at timestamptz,
+        deleted_at timestamptz
       );
       create unique index unique_username_on_users on users(username);
       create unique index unique_email_on_users on users(email);
