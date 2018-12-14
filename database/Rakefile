@@ -1,0 +1,19 @@
+# frozen_string_literal: true
+
+require 'active_record_migrations'
+
+ActiveRecordMigrations.configure do |c|
+  c.database_configuration = {
+    'default' => {
+      'adapter' => 'postgresql',
+      'database' => 'pintercode',
+      'host' => ENV['DB_HOST'] || 'localhost',
+      'port' => ENV['DB_PORT'] || 5432,
+      'username' => ENV['DB_USER'] || 'postgres',
+      'password' => ENV['DB_PASS']
+    }
+  }
+  c.environment = 'default'
+  c.migrations_paths = ['migrations']
+end
+ActiveRecordMigrations.load_tasks
