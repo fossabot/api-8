@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"gitlab.com/pinterkode/pinterkode/api/utils/testhelper"
+	"gitlab.com/pinterkode/pinterkode/api/pkg/utils/testhelper"
 )
 
 func TestMiddlewareReturnUnauthorized(t *testing.T) {

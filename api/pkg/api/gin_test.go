@@ -7,12 +7,12 @@ import (
 	"net"
 	"net/http"
 	"net/url"
-	"reflect"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
 	"gitlab.com/pinterkode/pinterkode/api/pkg/utils/logger"
 	"gitlab.com/pinterkode/pinterkode/api/pkg/utils/testhelper"
 )
@@ -53,15 +53,15 @@ func TestWrapGin(t *testing.T) {
 				resp := JSONResponse(http.StatusOK, map[string]interface{}{
 					"hello": "world",
 				})
-				resp.Header().Add("first_key", "first_val1")
-				resp.Header().Add("first_key", "first_val2")
+				resp.Header().Add("X-First-Key", "first_val1")
+				resp.Header().Add("X-First-Key", "first_val2")
 				return resp
 			},
 			ExpectedResponse: &dummyResponse{
 				statusCode: http.StatusOK,
 				body:       []byte(`{"hello":"world"}`),
 				header: map[string][]string{
-					"first_key": []string{"first_val1", "first_val2"},
+					"X-First-Key": []string{"first_val1", "first_val2"},
 				},
 				contentType: ContentTypeJSON,
 			},
@@ -70,22 +70,12 @@ func TestWrapGin(t *testing.T) {
 
 	for _, tc := range tcs {
 		body, header, statusCode, err := runGin(WrapGin(testhelper.NewContext(), tc.Handler), tc.Request.Raw())
-		if err != nil {
-			t.Error("there was an error when running the handler", err)
-		}
+		assert.Nil(t, err)
 		exBody := tc.ExpectedResponse.Body()
-		if strings.TrimSpace(string(body)) != strings.TrimSpace(string(exBody)) {
-			t.Error("does not return expected response body", "got", string(body), "want", string(exBody))
-		}
-		if statusCode != tc.ExpectedResponse.StatusCode() {
-			t.Error("does not return expected status code")
-		}
-		if reflect.DeepEqual(header, tc.ExpectedResponse.Header()) {
-			t.Error("does not return expected header", "got", header, "want", tc.ExpectedResponse.Header())
-		}
-		if !strings.Contains(header.Get("content-type"), tc.ExpectedResponse.ContentType()) {
-			t.Error("does not return expected content type, got", header.Get("content-type"))
-		}
+		assert.Equal(t, strings.TrimSpace(string(body)), strings.TrimSpace(string(exBody)))
+		assert.Equal(t, statusCode, tc.ExpectedResponse.StatusCode())
+		assert.Equal(t, header["X-First-Key"], tc.ExpectedResponse.Header()["X-First-Key"])
+		assert.Contains(t, header.Get("content-type"), tc.ExpectedResponse.ContentType())
 	}
 }
 
@@ -100,9 +90,7 @@ func TestHandlePostJson(t *testing.T) {
 	req := NewDummyRequest().SetJSONBody(map[string]interface{}{"value": "something"})
 	runGin(WrapGin(testhelper.NewContext(), handler), req.Raw())
 
-	if p.Value != "something" {
-		t.Error("does not work")
-	}
+	assert.Equal(t, p.Value, "something")
 }
 
 func runGin(h gin.HandlerFunc, req *http.Request) ([]byte, http.Header, int, error) {
