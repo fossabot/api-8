@@ -8,12 +8,12 @@ require (
 	github.com/cenkalti/backoff v2.1.0+incompatible // indirect
 	github.com/certifi/gocertifi v0.0.0-20180905225744-ee1a9a0726d2 // indirect
 	github.com/containerd/continuity v0.0.0-20181203112020-004b46473808 // indirect
-	github.com/corpix/uarand v0.0.0 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20181014144952-4e0d7dc8888f // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.3.3 // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/getsentry/raven-go v0.2.0
+	github.com/gin-contrib/cors v0.0.0-20181206035131-7c641a7a7dc5
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-redis/redis v6.14.2+incompatible
@@ -21,7 +21,6 @@ require (
 	github.com/gofrs/uuid v3.1.0+incompatible // indirect
 	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/gotestyourself/gotestyourself v2.2.0+incompatible // indirect
-	github.com/icrowley/fake v0.0.0-20180203215853-4178557ae428
 	github.com/jinzhu/gorm v1.9.2
 	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a // indirect
 	github.com/jinzhu/now v0.0.0-20181116074157-8ec929ed50c3 // indirect
