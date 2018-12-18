@@ -6,10 +6,10 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/devlover-id/api/pkg/api"
+	"github.com/devlover-id/api/pkg/user"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/api"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/user"
 )
 
 var originCheck = regexp.MustCompile("https?://(.+.)?pinterkode.id")

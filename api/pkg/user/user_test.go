@@ -1,8 +1,8 @@
 package user
 
 import (
+	"github.com/devlover-id/api/pkg/model"
 	"github.com/icrowley/fake"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/model"
 )
 
 func (s *UserTestSuite) TestSaveUser() {

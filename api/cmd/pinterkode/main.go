@@ -5,10 +5,10 @@ import (
 	"os"
 	"time"
 
+	"github.com/devlover-id/api/pkg/database"
+	"github.com/devlover-id/api/pkg/server"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/database"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/server"
 )
 
 func main() {

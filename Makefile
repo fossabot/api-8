@@ -7,5 +7,5 @@ test-db:
 
 run:
 	cd api \
-		&& go build -o out/pinterkode gitlab.com/pinterkode/pinterkode/api/cmd/pinterkode \
+		&& go build -o out/pinterkode github.com/devlover-id/api/cmd/pinterkode \
 		&& ./out/pinterkode

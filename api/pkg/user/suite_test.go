@@ -3,8 +3,8 @@ package user
 import (
 	"testing"
 
+	"github.com/devlover-id/api/pkg/utils/testhelper"
 	"github.com/stretchr/testify/suite"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/utils/testhelper"
 )
 
 type UserTestSuite struct {

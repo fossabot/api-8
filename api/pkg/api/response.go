@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"gitlab.com/pinterkode/pinterkode/api/pkg/utils/logger"
+	"github.com/devlover-id/api/pkg/utils/logger"
 )
 
 // Response represents an api response

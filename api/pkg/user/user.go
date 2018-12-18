@@ -1,9 +1,9 @@
 package user
 
 import (
-	"gitlab.com/pinterkode/pinterkode/api/pkg/database"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/model"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/utils/crypto"
+	"github.com/devlover-id/api/pkg/database"
+	"github.com/devlover-id/api/pkg/model"
+	"github.com/devlover-id/api/pkg/utils/crypto"
 )
 
 func createUser(username, password, email string) (*model.User, error) {

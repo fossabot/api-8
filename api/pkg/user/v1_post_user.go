@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
+	"github.com/devlover-id/api/pkg/api"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/api"
 )
 
 type v1PostUserRequest struct {

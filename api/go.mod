@@ -1,4 +1,4 @@
-module gitlab.com/pinterkode/pinterkode/api
+module github.com/devlover-id/api
 
 require (
 	cloud.google.com/go v0.34.0 // indirect

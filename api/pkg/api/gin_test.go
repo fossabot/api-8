@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/devlover-id/api/pkg/utils/logger"
+	"github.com/devlover-id/api/pkg/utils/testhelper"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/utils/logger"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/utils/testhelper"
 )
 
 func init() {

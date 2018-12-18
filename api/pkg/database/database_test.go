@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/devlover-id/api/pkg/utils/logger"
 	"github.com/stretchr/testify/assert"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/utils/logger"
 )
 
 func init() {

@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/devlover-id/api/pkg/utils/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/xid"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/utils/logger"
 )
 
 // WrapGin wraps a Handler and turns it into gin compatible handler

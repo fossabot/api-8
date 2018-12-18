@@ -7,10 +7,10 @@ import (
 	"os/exec"
 	"path"
 
+	"github.com/devlover-id/api/pkg/database"
+	"github.com/devlover-id/api/pkg/utils/docker"
+	"github.com/devlover-id/api/pkg/utils/logger"
 	"github.com/stretchr/testify/suite"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/database"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/utils/docker"
-	"gitlab.com/pinterkode/pinterkode/api/pkg/utils/logger"
 )
 
 type Suite struct {
