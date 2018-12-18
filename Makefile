@@ -5,7 +5,6 @@ test-db:
 		&& rbenv exec rake db:migrate \
 		&& rbenv exec rake db:migrate VERSION=0
 
-run:
-	cd api \
-		&& go build -o out/pinterkode github.com/devlover-id/api/cmd/pinterkode \
-		&& ./out/pinterkode
+run-api:
+	cd api && go build -o out/devlover-api github.com/devlover-id/api/cmd/devlover-api
+	./api/out/devlover-api
