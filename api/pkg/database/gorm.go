@@ -16,6 +16,7 @@ type gormSQL struct {
 }
 
 func (g *gormSQL) query(dest interface{}, query string, args ...interface{}) error {
+	query = injectCallerInfo(query)
 	err := g.db.Raw(query, args...).Scan(dest).Error
 	if err != nil {
 		log.Error().Err(err).Str("query", query).Interface("args", args)
@@ -24,6 +25,7 @@ func (g *gormSQL) query(dest interface{}, query string, args ...interface{}) err
 }
 
 func (g *gormSQL) exec(query string, args ...interface{}) error {
+	query = injectCallerInfo(query)
 	err := g.db.Exec(query, args...).Error
 	if err != nil {
 		log.Error().Err(err).Str("query", query).Interface("args", args)
@@ -46,6 +48,7 @@ func (g *gormTransaction) Query(dest interface{}, query string, args ...interfac
 	if g.finished {
 		return ErrTxFinished
 	}
+	query = injectCallerInfo(query)
 	err := g.db.Raw(query, args...).Scan(dest).Error
 	if err != nil {
 		log.Error().Err(err).Str("query", query).Interface("args", args)
@@ -57,6 +60,7 @@ func (g *gormTransaction) Exec(query string, args ...interface{}) error {
 	if g.finished {
 		return ErrTxFinished
 	}
+	query = injectCallerInfo(query)
 	err := g.db.Exec(query, args...).Error
 	if err != nil {
 		log.Error().Err(err).Str("query", query).Interface("args", args)

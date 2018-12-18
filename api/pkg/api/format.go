@@ -2,8 +2,6 @@ package api
 
 import (
 	"net/http"
-
-	raven "github.com/getsentry/raven-go"
 )
 
 // OKResp creates http ok response
@@ -20,7 +18,6 @@ func UnauthorizedResp() Response {
 
 // InternalServerErrResp create http internal server error response
 func InternalServerErrResp(err error) Response {
-	raven.CaptureError(err, nil)
 	return JSONResponse(http.StatusInternalServerError, map[string]string{
 		"error": "something wrong with our servers :(",
 	})

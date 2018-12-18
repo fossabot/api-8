@@ -1,6 +1,8 @@
 package logger
 
 import (
+	"os"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -8,6 +10,7 @@ import (
 // SurpressLog disable any logging
 func SurpressLog() {
 	zerolog.SetGlobalLevel(zerolog.Disabled)
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
 }
 
 func Info(msg string, data map[string]interface{}) {

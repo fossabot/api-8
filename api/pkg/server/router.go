@@ -9,6 +9,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gitlab.com/pinterkode/pinterkode/api/pkg/api"
+	"gitlab.com/pinterkode/pinterkode/api/pkg/user"
 )
 
 var originCheck = regexp.MustCompile("https?://(.+.)?pinterkode.id")
@@ -37,9 +38,10 @@ func buildRouter(prod bool) http.Handler {
 	router.GET("/", api.WrapGin(ctx, index))
 	router.GET("/ping", api.WrapGin(ctx, ping))
 
-	// v1 := router.Group("/v1")
-	// {
-	// }
+	v1 := router.Group("/v1")
+	{
+		v1.POST("/users", api.WrapGin(ctx, user.V1PostUser))
+	}
 	return router
 }
 

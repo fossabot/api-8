@@ -5,12 +5,7 @@ require 'active_record_migrations'
 ActiveRecordMigrations.configure do |c|
   c.database_configuration = {
     'default' => {
-      'adapter' => 'postgresql',
-      'database' => 'pintercode',
-      'host' => ENV['DB_HOST'] || 'localhost',
-      'port' => ENV['DB_PORT'] || 5432,
-      'username' => ENV['DB_USER'] || 'postgres',
-      'password' => ENV['DB_PASS']
+      'url' => ENV['DB_URL'] || 'postgres://postgres:@localhost:5432/develover?sslmode=disable'
     }
   }
   c.environment = 'default'
