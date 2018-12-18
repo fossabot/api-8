@@ -5,7 +5,7 @@ require 'active_record_migrations'
 ActiveRecordMigrations.configure do |c|
   c.database_configuration = {
     'default' => {
-      'url' => ENV['DB_URL'] || 'postgres://postgres:@localhost:5432/develover?sslmode=disable'
+      'url' => ENV['DB_URL'] || 'postgres://postgres:@localhost:5432/devlover-id?sslmode=disable'
     }
   }
   c.environment = 'default'
