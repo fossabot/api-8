@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	_ "github.com/lib/pq" // postgres driver
+	"github.com/ory/dockertest"
 )
 
 // RunPostgres create and run postgres server.
@@ -20,10 +21,18 @@ func RunPostgres(version string) (string, func()) {
 		dbpassword = "password"
 	)
 
-	resource, err := startContainer("postgres", version, []string{
-		"POSTGRES_DB=" + dbname,
-		"POSTGRES_USER=" + dbuser,
-		"POSTGRES_PASSWORD=" + dbpassword,
+	resource, err := pool.RunWithOptions(&dockertest.RunOptions{
+		Repository: "postgres",
+		Tag:        version,
+		Env: []string{
+			"POSTGRES_DB=" + dbname,
+			"POSTGRES_USER=" + dbuser,
+			"POSTGRES_PASSWORD=" + dbpassword,
+		},
+		Cmd: []string{
+			"-c",
+			"log_statement=all",
+		},
 	})
 	if err != nil {
 		panic(fmt.Sprintf("fail to start postgres container, err: %s", err))

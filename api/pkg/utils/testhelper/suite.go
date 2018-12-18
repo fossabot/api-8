@@ -15,13 +15,14 @@ import (
 
 type Suite struct {
 	suite.Suite
+	suite.SetupAllSuite
 	suite.TearDownAllSuite
 
 	NeedDB    bool
 	destroyDB func()
 }
 
-func (s *Suite) SetupTest() {
+func (s *Suite) SetupSuite() {
 	logger.SurpressLog()
 
 	docker.Configure()
