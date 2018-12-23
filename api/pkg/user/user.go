@@ -2,17 +2,17 @@ package user
 
 import (
 	"github.com/devlover-id/api/pkg/database"
-	"github.com/devlover-id/api/pkg/model"
+	"github.com/devlover-id/api/pkg/types"
 	"github.com/devlover-id/api/pkg/utils/crypto"
 )
 
-func createUser(username, password, email string) (*model.User, error) {
+func createUser(username, password, email string) (*types.User, error) {
 	hashedPassword, err := crypto.CreateStringHash(password, 10)
 	if err != nil {
 		return nil, err
 	}
 
-	user := &model.User{
+	user := &types.User{
 		Username:          username,
 		EncryptedPassword: hashedPassword,
 		Email:             email,
@@ -25,7 +25,7 @@ func createUser(username, password, email string) (*model.User, error) {
 	return user, nil
 }
 
-func saveUser(user *model.User) error {
+func saveUser(user *types.User) error {
 	query := `
 		insert into users (
 			username,

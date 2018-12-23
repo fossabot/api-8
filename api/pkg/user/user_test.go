@@ -1,12 +1,12 @@
 package user
 
 import (
-	"github.com/devlover-id/api/pkg/model"
+	"github.com/devlover-id/api/pkg/types"
 	"github.com/icrowley/fake"
 )
 
 func (s *UserTestSuite) TestSaveUser() {
-	user := &model.User{
+	user := &types.User{
 		Username:          fake.UserName(),
 		EncryptedPassword: fake.CharactersN(10),
 		Email:             fake.EmailAddress(),
