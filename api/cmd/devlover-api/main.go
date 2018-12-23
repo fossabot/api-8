@@ -1,32 +1,32 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"time"
 
+	"github.com/caarlos0/env"
 	"github.com/devlover-id/api/pkg/database"
 	"github.com/devlover-id/api/pkg/server"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	var conf config
+	if err := env.Parse(&conf); err != nil {
+		logrus.Fatalln("failed to parse environment variables", err)
+	}
 
 	if err := database.Configure(&database.Config{
 		Master: &database.DBConf{
-			URL:          os.Getenv("DB_URL"),
+			URL:          conf.ListenAddr,
 			ConnLifetime: 60 * time.Minute,
 			MaxIdleConns: 5,
 			MaxOpenConns: 5,
 		},
 	}); err != nil {
-		fmt.Println(err)
+		logrus.Fatalln("failed to configure database", err)
 	}
 
-	addr := "localhost:8080"
-	if err := server.Run(addr, false); err != nil {
-		fmt.Println(err)
+	if err := server.Run(conf.ListenAddr, false); err != nil {
+		logrus.WithField("msg", err.Error()).Println("server exitted")
 	}
 }
