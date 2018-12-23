@@ -26,7 +26,7 @@ func main() {
 		logrus.WithError(err).Fatalln("failed to configure database")
 	}
 
-	if err := server.Run(conf.ListenAddr, false); err != nil {
+	if err := server.Run(conf.ListenAddr, conf.Production); err != nil {
 		logrus.WithField("msg", err.Error()).Warnln("server died")
 	}
 }
