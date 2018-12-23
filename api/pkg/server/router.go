@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var originCheck = regexp.MustCompile("https?://(.+.)?pinterkode.id")
+var originCheck = regexp.MustCompile("https://(.+.)?devlover.id")
 
 // buildRouter construct and return http router
 func buildRouter(prod bool) http.Handler {
