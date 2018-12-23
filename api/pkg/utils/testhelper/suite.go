@@ -1,7 +1,6 @@
 package testhelper
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -39,26 +38,21 @@ func (s *Suite) TearDownSuite() {
 	}
 }
 
-func (s *Suite) RespBodyEqual(body []byte, other map[string]interface{}) {
-	p, err := json.Marshal(other)
-	s.Nil(err)
-	s.Equal(string(body), string(p))
-}
-
 func (s *Suite) setupDB() {
-	if dbURL := os.Getenv("DB_URL"); dbURL == "" {
+	dbURL := os.Getenv("DB_URL")
+	if dbURL == "" {
 		dbURL, s.destroyDB = docker.RunPostgres("11")
 		database.ConfigureTest(dbURL)
-		s.runDBMigration(dbURL)
 	} else {
 		database.ConfigureTest(dbURL)
 	}
+	s.runDbMigration(dbURL)
 }
 
-func (s *Suite) runDBMigration(dbURL string) {
+func (s *Suite) runDbMigration(dbURL string) {
 	wd, _ := os.Getwd()
 
-	for n := 0; wd != "/" || n < 10; n++ {
+	for n := 0; wd != "/" || n < 5; n++ {
 		testDir := path.Join(wd, "database", "Rakefile")
 
 		if _, err := os.Stat(testDir); !os.IsNotExist(err) {
