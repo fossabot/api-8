@@ -43,16 +43,16 @@ func (s *Suite) setupDB() {
 	if dbURL == "" {
 		dbURL, s.destroyDB = docker.RunPostgres("11")
 		database.ConfigureTest(dbURL)
+		s.runDbMigration(dbURL)
 	} else {
 		database.ConfigureTest(dbURL)
 	}
-	s.runDbMigration(dbURL)
 }
 
 func (s *Suite) runDbMigration(dbURL string) {
 	wd, _ := os.Getwd()
 
-	for n := 0; wd != "/" || n < 5; n++ {
+	for n := 0; wd != "/" || n < 8; n++ {
 		testDir := path.Join(wd, "database", "Rakefile")
 
 		if _, err := os.Stat(testDir); !os.IsNotExist(err) {

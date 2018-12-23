@@ -12,21 +12,21 @@ import (
 func main() {
 	var conf config
 	if err := env.Parse(&conf); err != nil {
-		logrus.Fatalln("failed to parse environment variables", err)
+		logrus.WithError(err).Fatalln("failed to parse environment variables")
 	}
 
 	if err := database.Configure(&database.Config{
 		Master: &database.DBConf{
-			URL:          conf.ListenAddr,
+			URL:          conf.DbURL,
 			ConnLifetime: 60 * time.Minute,
 			MaxIdleConns: 2,
 			MaxOpenConns: 5,
 		},
 	}); err != nil {
-		logrus.Fatalln("failed to configure database", err)
+		logrus.WithError(err).Fatalln("failed to configure database")
 	}
 
 	if err := server.Run(conf.ListenAddr, false); err != nil {
-		logrus.WithField("msg", err.Error()).Println("server exitted")
+		logrus.WithField("msg", err.Error()).Warnln("server died")
 	}
 }
