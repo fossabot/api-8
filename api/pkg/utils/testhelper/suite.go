@@ -27,13 +27,13 @@ func (s *Suite) SetupSuite() {
 	logrus.SetOutput(ioutil.Discard)
 
 	docker.Configure()
-	if s.NeedDB {
+	if s.NeedDB || os.Getenv("DB_URL") == "" {
 		s.setupDB()
 	}
 }
 
 func (s *Suite) TearDownSuite() {
-	if s.NeedDB {
+	if s.NeedDB || os.Getenv("DB_URL") == "" {
 		database.Shutdown()
 		s.destroyDB()
 	}

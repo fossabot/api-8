@@ -1,0 +1,3 @@
+cd api
+go build -o out/api github.com/devlover-id/api/cmd/devlover-api
+go test -v ./...

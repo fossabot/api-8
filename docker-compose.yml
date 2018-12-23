@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+    database:
+        image: 'postgres:11'
+        container_name: database
+        ports:
+            - '5432:5432'
+        environment:
+            - POSTGRES_DB=devlover-id
+            - POSTGRES_USER=user
+            - POSTGRES_PASSWORD=password
+networks:
+    default:
+        external:
+            name: cloudbuild
