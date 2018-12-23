@@ -2,24 +2,26 @@ package database
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/rs/zerolog/log"
+	"github.com/sirupsen/logrus"
 )
 
-func newGormSQL(db *gorm.DB) sql {
+func newGormSQL(host string, db *gorm.DB) sql {
 	return &gormSQL{
-		db: db,
+		host: host,
+		db:   db,
 	}
 }
 
 type gormSQL struct {
-	db *gorm.DB
+	db   *gorm.DB
+	host string
 }
 
 func (g *gormSQL) query(dest interface{}, query string, args ...interface{}) error {
 	query = injectCallerInfo(query)
 	err := g.db.Raw(query, args...).Scan(dest).Error
 	if err != nil {
-		log.Error().Err(err).Str("query", query).Interface("args", args)
+		logrus.WithError(err).WithField("query", query).WithField("args", args).Errorln("a query returned error")
 	}
 	return err
 }
@@ -28,19 +30,21 @@ func (g *gormSQL) exec(query string, args ...interface{}) error {
 	query = injectCallerInfo(query)
 	err := g.db.Exec(query, args...).Error
 	if err != nil {
-		log.Error().Err(err).Str("query", query).Interface("args", args)
+		logrus.WithError(err).WithField("host", g.host).WithField("query", query).WithField("args", args).Errorln("a query returned error")
 	}
 	return err
 }
 
 func (g *gormSQL) newTransaction() Transaction {
 	return &gormTransaction{
-		db: g.db.Begin(),
+		db:   g.db.Begin(),
+		host: g.host,
 	}
 }
 
 type gormTransaction struct {
 	db       *gorm.DB
+	host     string
 	finished bool
 }
 
@@ -51,7 +55,7 @@ func (g *gormTransaction) Query(dest interface{}, query string, args ...interfac
 	query = injectCallerInfo(query)
 	err := g.db.Raw(query, args...).Scan(dest).Error
 	if err != nil {
-		log.Error().Err(err).Str("query", query).Interface("args", args)
+		logrus.WithError(err).WithField("host", g.host).WithField("query", query).WithField("args", args).Errorln("a query returned error")
 	}
 	return err
 }
@@ -63,7 +67,7 @@ func (g *gormTransaction) Exec(query string, args ...interface{}) error {
 	query = injectCallerInfo(query)
 	err := g.db.Exec(query, args...).Error
 	if err != nil {
-		log.Error().Err(err).Str("query", query).Interface("args", args)
+		logrus.WithError(err).WithField("host", g.host).WithField("query", query).WithField("args", args).Errorln("a query returned error")
 	}
 	return err
 }
@@ -75,7 +79,7 @@ func (g *gormTransaction) Commit() error {
 	g.finished = true
 	err := g.db.Commit().Error
 	if err != nil {
-		log.Error().Err(err)
+		logrus.WithError(err).WithField("host", g.host).Errorln("transaction commit failed")
 	}
 	return err
 }
@@ -87,7 +91,7 @@ func (g *gormTransaction) Rollback() error {
 	g.finished = true
 	err := g.db.Rollback().Error
 	if err != nil {
-		log.Error().Err(err)
+		logrus.WithError(err).WithField("host", g.host).Errorln("transaction rollback failed")
 	}
 	return err
 }

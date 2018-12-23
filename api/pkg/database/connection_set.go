@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/rs/zerolog/log"
+	"github.com/sirupsen/logrus"
 )
 
 var csTickDelay = 30 * time.Second
@@ -77,7 +77,7 @@ func (c *connectionSet) updateActiveSlaves() {
 func (c *connectionSet) reader() sql {
 	nActive := len(c.activeSlaves)
 	if nActive == 0 {
-		log.Info().Msg("no active database connection to slaves")
+		logrus.Warnln("no active database connection to slaves")
 		return c.masterConn.s
 	}
 

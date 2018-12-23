@@ -1,16 +1,17 @@
 package database
 
 import (
+	"io/ioutil"
 	"sync"
 	"testing"
 	"time"
 
-	"github.com/devlover-id/api/pkg/utils/logger"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
 
 func init() {
-	logger.SurpressLog()
+	logrus.SetOutput(ioutil.Discard)
 }
 
 func TestShutdown(t *testing.T) {

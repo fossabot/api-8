@@ -9,7 +9,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // postgres dialect
-	"github.com/rs/zerolog/log"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -41,13 +41,13 @@ type connection struct {
 func newConnection(connStr string, maxOpenConns, maxIdleConns int, connLifetime time.Duration) (*connection, error) {
 	u, err := url.Parse(connStr)
 	if err != nil {
-		log.Error().Err(err).Str("connectionString", connStr)
+		logrus.WithError(err).WithField("connectionString", connStr).Errorln("error parsing connection string")
 		return nil, err
 	}
 
 	db, err := gorm.Open("postgres", connStr)
 	if err != nil {
-		log.Error().Err(err).Str("connectionString", connStr)
+		logrus.WithError(err).WithField("connectionString", connStr).Errorln("error openning database connection")
 		return nil, err
 	}
 	db.DB().SetMaxOpenConns(maxOpenConns)
@@ -62,7 +62,7 @@ func newConnection(connStr string, maxOpenConns, maxIdleConns int, connLifetime 
 	}
 	conn := &connection{
 		host:    u.Host,
-		s:       newGormSQL(db),
+		s:       newGormSQL(u.Host, db),
 		quitCh:  make(chan bool),
 		pingFn:  pingFn,
 		closeFn: closeFn,
@@ -75,7 +75,7 @@ func newConnection(connStr string, maxOpenConns, maxIdleConns int, connLifetime 
 	// run loop to update connection status in background
 	go conn.loop()
 
-	log.Info().Str("host", conn.host).Bool("connected", conn.connected).Msg("starting database connection")
+	logrus.WithField("db_host", conn.host).WithField("connected", conn.connected).Infoln("starting database connection")
 	return conn, nil
 }
 
@@ -94,7 +94,7 @@ func (c *connection) loop() {
 			}
 
 		case <-c.quitCh:
-			log.Info().Str("host", c.host).Msg("stopping database connection")
+			logrus.WithField("host", c.host).Warnln("got quit signal, stopping database connection")
 
 			// closeFn could be nil for testing purposes
 			if c.closeFn != nil {
@@ -116,10 +116,10 @@ func (c *connection) updateStatus() {
 	c.cMutex.Unlock()
 
 	if c.connected != old {
-		log.Info().Str("host", c.host).Bool("connected", c.connected).Msg("database connection status changes")
+		logrus.WithField("host", c.host).WithField("connected", c.connected).Warnln("database connection status changed")
 	}
 	if err != nil {
-		log.Error().Err(err).Str("host", c.host).Bool("connected", c.connected)
+		logrus.WithError(err).WithField("host", c.host).WithField("connected", c.connected).Errorln("error while checking database connection status")
 	}
 }
 

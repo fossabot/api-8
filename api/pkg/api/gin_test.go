@@ -11,14 +11,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/devlover-id/api/pkg/utils/logger"
 	"github.com/devlover-id/api/pkg/utils/testhelper"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
 
 func init() {
-	logger.SurpressLog()
+	logrus.SetOutput(ioutil.Discard)
 }
 
 type errResponse struct {

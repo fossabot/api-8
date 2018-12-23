@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/devlover-id/api/pkg/utils/logger"
+	"github.com/sirupsen/logrus"
 )
 
 // Response represents an api response
@@ -37,7 +37,7 @@ func (r *jsonResponse) StatusCode() int {
 func (r *jsonResponse) Body() []byte {
 	b, err := json.Marshal(r.data)
 	if err != nil {
-		logger.Error("failed to parse response body", nil, err)
+		logrus.WithError(err).Errorln("failed to parse response body")
 		return nil
 	}
 	return b

@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/devlover-id/api/pkg/utils/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/xid"
+	"github.com/sirupsen/logrus"
 )
 
 // WrapGin wraps a Handler and turns it into gin compatible handler
@@ -17,7 +17,7 @@ func WrapGin(parent context.Context, h Handler) gin.HandlerFunc {
 	return func(gCtx *gin.Context) {
 		defer func() {
 			if thing := recover(); thing != nil {
-				logger.Error("got panic while handling request", nil, fmt.Errorf("%v", thing))
+				logrus.WithError(fmt.Errorf("%v", thing)).Errorln("panic while handling request")
 			}
 		}()
 
@@ -44,15 +44,15 @@ func WrapGin(parent context.Context, h Handler) gin.HandlerFunc {
 		gCtx.Writer.WriteHeader(resp.StatusCode())
 
 		// access log
-		logger.Info("finished handling request", map[string]interface{}{
-			"request_id":      req.ID(),
-			"duration":        time.Since(start) / time.Millisecond,
-			"method":          gCtx.Request.Method,
-			"url":             gCtx.Request.URL.Path,
-			"headers":         gCtx.Request.Header,
-			"status":          resp.StatusCode(),
-			"response_length": len(body),
-		})
+		logrus.
+			WithField("request_id", req.ID()).
+			WithField("duration", time.Since(start)/time.Millisecond).
+			WithField("method", gCtx.Request.Method).
+			WithField("url", gCtx.Request.URL).
+			WithField("headers", gCtx.Request.Header).
+			WithField("status", resp.StatusCode()).
+			WithField("resp_body_length", len(body)).
+			Infoln("finished handling request")
 	}
 }
 

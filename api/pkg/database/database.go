@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/rs/zerolog/log"
+	"github.com/sirupsen/logrus"
 )
 
 // error definitions
@@ -47,7 +47,7 @@ type Config struct {
 func Configure(config *Config) error {
 	masterConn, err := newConnection(config.Master.URL, config.Master.MaxOpenConns, config.Master.MaxIdleConns, config.Master.ConnLifetime)
 	if err != nil {
-		log.Error().Err(err).Str("dbURL", config.Master.URL)
+		logrus.WithField("db_url", config.Master.URL).WithError(err).Errorln("failed to create connection to master")
 		return err
 	}
 
@@ -55,7 +55,7 @@ func Configure(config *Config) error {
 	for i, conf := range config.Slaves {
 		conn, err := newConnection(conf.URL, conf.MaxOpenConns, conf.MaxIdleConns, conf.ConnLifetime)
 		if err != nil {
-			log.Error().Err(err).Str("dbURL", conf.URL)
+			logrus.WithField("db_url", config.Master.URL).WithError(err).Errorln("failed to create connection to slave")
 			return err
 		}
 		slaveConns[i] = conn

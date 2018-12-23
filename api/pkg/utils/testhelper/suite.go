@@ -3,13 +3,14 @@ package testhelper
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
 
 	"github.com/devlover-id/api/pkg/database"
 	"github.com/devlover-id/api/pkg/utils/docker"
-	"github.com/devlover-id/api/pkg/utils/logger"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -23,7 +24,7 @@ type Suite struct {
 }
 
 func (s *Suite) SetupSuite() {
-	logger.SurpressLog()
+	logrus.SetOutput(ioutil.Discard)
 
 	docker.Configure()
 	if s.NeedDB {

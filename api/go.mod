@@ -41,7 +41,6 @@ require (
 	github.com/ory/dockertest v3.3.2+incompatible
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/rs/xid v1.2.1
-	github.com/rs/zerolog v1.11.0
 	github.com/sirupsen/logrus v1.2.0
 	github.com/stretchr/testify v1.2.2
 	github.com/ugorji/go/codec v0.0.0-20181209151446-772ced7fd4c2 // indirect
