@@ -8,7 +8,7 @@ test-db:
 		&& rbenv exec rake db:migrate VERSION=0
 
 test-api:
-	cd api && go test ./...
+	cd api && go test -v ./...
 
 run-api:
 	cd api && go build -o out/devlover-api github.com/devlover-id/api/cmd/devlover-api
