@@ -19,7 +19,7 @@ func main() {
 		Master: &database.DBConf{
 			URL:          conf.ListenAddr,
 			ConnLifetime: 60 * time.Minute,
-			MaxIdleConns: 5,
+			MaxIdleConns: 2,
 			MaxOpenConns: 5,
 		},
 	}); err != nil {
