@@ -57,10 +57,10 @@ func (c *connectionSet) loop() {
 
 func (c *connectionSet) updateActiveSlaves() {
 	slaves := make([]*connection, 0, c.nSlaves)
-	for i, conn := range c.slaveConns {
+	for _, conn := range c.slaveConns {
 		conn.cMutex.RLock()
 		if conn.connected {
-			slaves[i] = conn
+			slaves = append(slaves, conn)
 		}
 		conn.cMutex.RUnlock()
 	}
