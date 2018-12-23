@@ -33,7 +33,7 @@ func (s *Suite) SetupSuite() {
 }
 
 func (s *Suite) TearDownSuite() {
-	if s.NeedDB || os.Getenv("DB_URL") == "" {
+	if s.NeedDB && os.Getenv("DB_URL") == "" {
 		database.Shutdown()
 		s.destroyDB()
 	}
