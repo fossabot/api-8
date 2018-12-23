@@ -27,7 +27,7 @@ func (s *Suite) SetupSuite() {
 	logrus.SetOutput(ioutil.Discard)
 
 	docker.Configure()
-	if s.NeedDB || os.Getenv("DB_URL") == "" {
+	if s.NeedDB {
 		s.setupDB()
 	}
 }
@@ -46,11 +46,13 @@ func (s *Suite) RespBodyEqual(body []byte, other map[string]interface{}) {
 }
 
 func (s *Suite) setupDB() {
-	var dbURL string
-	dbURL, s.destroyDB = docker.RunPostgres("11")
-	database.ConfigureTest(dbURL)
-
-	s.runDBMigration(dbURL)
+	if dbURL := os.Getenv("DB_URL"); dbURL == "" {
+		dbURL, s.destroyDB = docker.RunPostgres("11")
+		database.ConfigureTest(dbURL)
+		s.runDBMigration(dbURL)
+	} else {
+		database.ConfigureTest(dbURL)
+	}
 }
 
 func (s *Suite) runDBMigration(dbURL string) {
