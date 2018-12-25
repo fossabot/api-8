@@ -21,7 +21,7 @@ steps:
   - --plaintext-file=.ssh/id_rsa
   - --location=global
   - --keyring=gcb
-  - --key=gcb
+  - --key=gcb-secrets
 - name: alpine:3.8
   args: ['sh', '-x', 'build/deploy.sh']
   env:
