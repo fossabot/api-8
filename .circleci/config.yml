@@ -1,8 +1,8 @@
 version: 2
 jobs:
-  build:
+  test_db:
     docker:
-      - image: ruby:2.5
+      - image: ruby:2.5-alpine
         environment:
           DB_URL: postgres://user:password@localhost/db?sslmode=disable
       - image: postgres:11
@@ -12,32 +12,23 @@ jobs:
           POSTGRES_DB: db
     steps:
       - checkout
-      - run:
-          name: run db migrations
-          command: |
-            cd database
-            bundle install
-            rake db:migrate
-          environment:
-  test:
+      - run: |
+          apk add --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main postgresql-client postgresql-dev
+          apk add ruby-dev build-base
+          sh -x -e ./build/test_db.sh
+  test_api:
     docker:
       - image: golang:1.11-alpine
         environment:
           DB_URL: postgres://user:password@localhost/db?sslmode=disable
+          CGO_ENABLED: 0
       - image: postgres:11
         environment:
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
           POSTGRES_DB: db
     steps:
-      - run: apk add --no-cache postgresql-client
-      - run: pwd
-      - run: psql $DB_URL < database/db/structure.sql
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
+      - checkout
+      - run: apk add --no-cache postgresql-client git
+      - run: psql $DB_URL -f ./database/db/structure.sql
+      - run: sh ./build/test_api.sh
