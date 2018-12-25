@@ -1,0 +1,41 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: ruby:2.5
+        environment:
+          DB_URL: postgres://user:password@localhost/db?sslmode=disable
+      - image: postgres:11
+        environment:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: db
+    steps:
+      - checkout
+      - run:
+          name: run db migrations
+          command: |
+            cd database
+            bundle install
+            rake db:migrate
+          environment:
+  test:
+    docker:
+      - image: golang:1.11-alpine
+        environment:
+          DB_URL: postgres://user:password@localhost/db?sslmode=disable
+      - image: postgres:11
+        environment:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: db
+    steps:
+      - run: apk add --no-cache postgresql-client
+      - run: pwd
+      - run: psql $DB_URL < database/db/structure.sql
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test
