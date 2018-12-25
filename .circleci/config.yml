@@ -32,3 +32,9 @@ jobs:
       - run: apk add --no-cache postgresql-client git
       - run: psql $DB_URL -f ./database/db/structure.sql
       - run: sh ./build/test_api.sh
+workflows:
+  version: 2
+  tests:
+    jobs:
+      - test_db
+      - test_api
