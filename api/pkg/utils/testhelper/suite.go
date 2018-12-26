@@ -43,10 +43,10 @@ func (s *Suite) setupDB() {
 	if dbURL == "" {
 		dbURL, s.destroyDB = docker.RunPostgres("11")
 		database.ConfigureTest(dbURL)
-		s.runDbMigration(dbURL)
 	} else {
 		database.ConfigureTest(dbURL)
 	}
+	s.runDbMigration(dbURL)
 }
 
 func (s *Suite) runDbMigration(dbURL string) {
