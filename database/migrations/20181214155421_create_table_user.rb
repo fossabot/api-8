@@ -4,19 +4,18 @@ class CreateTableUser < ActiveRecord::Migration[5.2]
       create table users (
         id serial4 primary key,
         username varchar(100) not null,
-        encrypted_password varchar(200) not null,
-        email varchar(500) not null,
+        encrypted_password varchar(200),
+        github_username varchar(500),
         active bool not null default false,
-        activation_token varchar(100) not null,
-        activation_token_expires_at timestamptz not null default now() + interval '15 minutes',
         created_at timestamptz not null default now(),
         updated_at timestamptz,
         deleted_at timestamptz
       );
       create unique index unique_username_on_users on users(username);
-      create unique index unique_email_on_users on users(email);
+      create unique index unique_github_username_on_users on users(github_username);
 
       comment on column users.active is 'true if user has clicked activation url';
+      comment on column users.encrypted_password is 'can be nil if user created the account using social login';
     SQL
   end
 
