@@ -1,4 +1,4 @@
-package user
+package auth
 
 import (
 	"testing"
@@ -7,12 +7,12 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type UserTestSuite struct {
+type AuthTestSuite struct {
 	testhelper.Suite
 }
 
-func TestUserSuite(t *testing.T) {
-	s := &UserTestSuite{}
+func TestAuthSuite(t *testing.T) {
+	s := &AuthTestSuite{}
 	s.NeedDB = true
 	suite.Run(t, s)
 }

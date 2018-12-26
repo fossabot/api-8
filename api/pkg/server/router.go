@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/devlover-id/api/pkg/api"
-	"github.com/devlover-id/api/pkg/user"
+	"github.com/devlover-id/api/pkg/auth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -40,7 +40,7 @@ func buildRouter(prod bool) http.Handler {
 
 	v1 := router.Group("/v1")
 	{
-		v1.POST("/users", api.WrapGin(ctx, user.V1PostUser))
+		v1.POST("/auth/register", api.WrapGin(ctx, auth.V1PostRegister))
 	}
 	return router
 }

@@ -6,9 +6,9 @@ class CreateTableUserProfile < ActiveRecord::Migration[5.2]
         activation_token varchar(100) not null,
         activation_token_expires_at timestamptz not null default now() + interval '15 minutes',
         name varchar(500) not null,
-        address varchar(2000) not null,
         email varchar(500) not null,
-        phone varchar(50) not null
+        address varchar(2000),
+        phone varchar(50)
       );
       create unique index unique_user_id_on_users on user_profile(user_id);
       create unique index unique_email_on_users on user_profile(email);
