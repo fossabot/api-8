@@ -59,8 +59,9 @@ func (s *Suite) runDbMigration(dbURL string) {
 			cmd := exec.Command("rake", "db:migrate")
 			cmd.Env = append(cmd.Env, fmt.Sprintf("DB_URL=%s", dbURL))
 			cmd.Dir = path.Join(wd, "database")
-			_, err := cmd.CombinedOutput()
+			out, err := cmd.CombinedOutput()
 			if err != nil {
+				fmt.Println(string(out))
 				s.FailNow("fail running db migration")
 			}
 			break
