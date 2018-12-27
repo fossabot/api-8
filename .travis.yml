@@ -16,7 +16,8 @@ addons:
 
 env:
   global:
-    - DB_URL=postgres://postgres@localhost/devlover-id?sslmode=disable
+    - PGPORT=5433
+    - DB_URL=postgres://postgres@localhost:5433/devlover-id?sslmode=disable
     - CGO_ENABLED=0
     - GO111MODULE=on
 
