@@ -42,27 +42,30 @@ func (s *Suite) setupDB() {
 	dbURL := os.Getenv("DB_URL")
 	if dbURL == "" {
 		dbURL, s.destroyDB = docker.RunPostgres("11")
-		database.ConfigureTest(dbURL)
-	} else {
-		database.ConfigureTest(dbURL)
 	}
+
 	s.runDbMigration(dbURL)
+
+	_, err := database.ConfigureTest(dbURL)
+	s.Nil(err)
 }
 
 func (s *Suite) runDbMigration(dbURL string) {
 	wd, _ := os.Getwd()
-
 	for n := 0; wd != "/" || n < 8; n++ {
 		testDir := path.Join(wd, "database", "Rakefile")
 
 		if _, err := os.Stat(testDir); !os.IsNotExist(err) {
-			cmd := exec.Command("rake", "db:migrate")
-			cmd.Env = append(cmd.Env, fmt.Sprintf("DB_URL=%s", dbURL))
-			cmd.Dir = path.Join(wd, "database")
-			out, err := cmd.CombinedOutput()
-			if err != nil {
-				fmt.Println(string(out))
-				s.FailNow("fail running db migration")
+			cmds := []string{"db:drop", "db:create", "db:migrate"}
+			for _, cmd := range cmds {
+				c := exec.Command("rake", cmd)
+				c.Env = append(c.Env, fmt.Sprintf("DB_URL=%s", dbURL))
+				c.Dir = path.Join(wd, "database")
+				out, err := c.CombinedOutput()
+				if err != nil {
+					s.T().Log("\n" + string(out))
+					s.FailNow("failed running db migration")
+				}
 			}
 			break
 		}

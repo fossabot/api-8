@@ -66,13 +66,13 @@ func Configure(config *Config) error {
 }
 
 // ConfigureTest configures this package for testing
-func ConfigureTest(dsn string) *libSql.DB {
+func ConfigureTest(dsn string) (*libSql.DB, error) {
 	master, err := newConnection(dsn, 1, 1, time.Minute)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	cs = newConnectionSet(master, nil)
-	return master.db()
+	return master.db(), nil
 }
 
 // Shutdown stops all connections
