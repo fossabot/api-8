@@ -15,9 +15,10 @@ addons:
   postgresql: "11"
 
 env:
-  - DB_URL=postgres://postgres@localhost/devlover-id?sslmode=disable
-  - CGO_ENABLED=0
-  - GO111MODULE=on
+  global:
+    - DB_URL=postgres://postgres@localhost/devlover-id?sslmode=disable
+    - CGO_ENABLED=0
+    - GO111MODULE=on
 
 install:
   - sudo apt-get update
