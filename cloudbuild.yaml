@@ -25,6 +25,7 @@ steps:
   - --location=global
   - --keyring=gcb
   - --key=gcb-secrets
+
 - name: alpine:3.8
   args: ['sh', '-x', 'build/deploy.sh']
   env:

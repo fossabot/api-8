@@ -42,9 +42,8 @@ func (s *Suite) setupDB() {
 	dbURL := os.Getenv("DB_URL")
 	if dbURL == "" {
 		dbURL, s.destroyDB = docker.RunPostgres("11")
+		s.runDbMigration(dbURL)
 	}
-
-	s.runDbMigration(dbURL)
 
 	_, err := database.ConfigureTest(dbURL)
 	s.Nil(err)
