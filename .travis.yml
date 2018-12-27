@@ -35,4 +35,6 @@ before_script:
   - psql -c "create database \"devlover-id\" with owner 'user';"
 
 script:
-  - make test
+  - make test-db
+  - cd database && rake db:drop && rake db:create && rake db:migrate && cd ..
+  - make test-api
