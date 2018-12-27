@@ -31,7 +31,7 @@ install:
   - cd database && gem install bundle && bundle install && cd ..
 
 before_script:
-  - psql -c "create role \"user\" with login password 'password';"
+  - psql -c "create role \"user\" with login createdb password 'password';"
   - psql -c "create database \"devlover-id\" with owner 'user';"
 
 script:
