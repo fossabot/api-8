@@ -23,8 +23,7 @@ env:
 install:
   - sudo apt-get update
   - sudo apt-get install -y ruby ruby-dev libpq-dev
-  - gem install bundle
-  - bundle install
+  - cd database && gem install bundle && bundle install
 
 before_script:
   - psql -c 'create database "devlover-id";' -U postgres
