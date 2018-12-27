@@ -9,7 +9,7 @@ steps:
     - 'DB_URL=postgres://user:password@database/devlover-id?sslmode=disable'
 
 - name: 'golang:1.11'
-  entrypoint: 'sh'
+  entrypoint: 'bash'
   args: ['-x', 'build/test_api.sh']
   env:
     - 'CGO_ENABLED=0'
