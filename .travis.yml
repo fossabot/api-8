@@ -21,16 +21,18 @@ addons:
 env:
   global:
     - PGPORT=5433
-    - DB_URL=postgres://postgres@127.0.0.1:5433/devlover-id?sslmode=disable
+    - DB_URL=postgres://user:password@127.0.0.1:5433/devlover-id?sslmode=disable
     - CGO_ENABLED=0
     - GO111MODULE=on
 
 install:
   - sudo apt-get update
   - sudo apt-get install -y ruby ruby-dev libpq-dev
+  - cd database && gem install bundle && bundle install && cd ..
 
 before_script:
-  - psql -c 'create database "devlover-id";' -U postgres
+  - psql -c "create role \"user\" with login password 'password';"
+  - psql -c "create database \"devlover-id\" with owner 'user';"
 
 script:
   - make test
