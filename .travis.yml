@@ -8,18 +8,19 @@ os:
 
 dist: xenial
 
-env:
-  - DB_URL=postgres://postgres@localhost/devlover-id?sslmode=disable
-  - CGO_ENABLED=0
-  - GO111MODULE=on
-
 services:
   - postgresql
 
 addons:
   postgresql: "11"
 
+env:
+  - DB_URL=postgres://postgres@localhost/devlover-id?sslmode=disable
+  - CGO_ENABLED=0
+  - GO111MODULE=on
+
 install:
+  - sudo apt-get update
   - apt-get install -y ruby ruby-dev libpq-dev
   - gem install bundle
   - bundle install
