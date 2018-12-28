@@ -15,7 +15,7 @@ type v1PostLoginPayload struct {
 func (p *v1PostLoginPayload) validate() error {
 	return validation.ValidateStruct(p,
 		validation.Field(&p.Username,
-			validation.Required.Error("username tidak boleh kosng"),
+			validation.Required.Error("username tidak boleh kosong"),
 		),
 		validation.Field(&p.Password,
 			validation.Required.Error("password tidak boleh kosong"),
@@ -32,21 +32,17 @@ func V1PostLogin(req api.Request) api.Response {
 		return api.JSONResponse(http.StatusBadRequest, validationErrors)
 	}
 
-	uid, token, err := login(payload.Username, payload.Password)
+	token, err := login(payload.Username, payload.Password)
 	if err == errNilUserPassword {
 		return api.ValidationErrResp(map[string]string{
-			"password": "password belum di set",
+			"password": "user tidak memiliki password",
 		})
 	}
 	if err != nil {
 		return api.InternalServerErrResp(err)
 	}
 	if len(token) == 0 {
-		return api.JSONResponse(http.StatusUnauthorized, nil)
-	}
-
-	if err := createUserSession(uid, token, req.Header().Get("user-agent"), req.ClientIP()); err != nil {
-		return api.InternalServerErrResp(err)
+		return api.JSONResponse(http.StatusForbidden, nil)
 	}
 
 	return api.JSONResponse(http.StatusOK, map[string]string{

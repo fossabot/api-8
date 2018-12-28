@@ -71,7 +71,9 @@ func createAuthenticationToken() string {
 	return xid.New().String()
 }
 
-func login(username, password string) (int64, string, error) {
+// login authentication token, and nil error
+// if given username and password are correct.
+func login(username, password string) (string, error) {
 	var user types.User
 	var query = `
 		select *
@@ -79,29 +81,15 @@ func login(username, password string) (int64, string, error) {
 		where username = ?
 	`
 	if err := database.WriterQuery(&user, query, username); err != nil {
-		return 0, "", err
+		return "", err
 	}
 
 	if user.EncryptedPassword == nil {
-		return 0, "", errNilUserPassword
+		return "", errNilUserPassword
 	}
 	if !crypto.ValidateHash(password, *user.EncryptedPassword) {
-		return 0, "", nil
+		return "", nil
 	}
 
-	token := crypto.CreateMAC(xid.New().String(), user.AuthenticationToken)
-	return user.ID, token, nil
-}
-
-func createUserSession(uid int64, token, userAgent, clientIP string) error {
-	var query = `
-		insert into user_sessions (
-			user_id,
-			token,
-			user_agent,
-			ip
-		)
-		values (?, ?, ?, ?)
-	`
-	return database.WriterExec(query, uid, token, userAgent, clientIP)
+	return user.AuthenticationToken, nil
 }
