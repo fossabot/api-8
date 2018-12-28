@@ -12,7 +12,7 @@ import (
 
 func (s *AuthTestSuite) TestPostRegister() {
 	password := fake.Password(8, 12, true, true, true)
-	payload := &v1PostRegisterRequest{
+	payload := &v1PostRegisterPayload{
 		Name:            fake.FullName(),
 		Username:        fake.UserName(),
 		Password:        password,

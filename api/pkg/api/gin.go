@@ -15,22 +15,23 @@ import (
 // This method should be called with a fresh ctx
 func WrapGin(parent context.Context, h Handler) gin.HandlerFunc {
 	return func(gCtx *gin.Context) {
-		defer func() {
-			if thing := recover(); thing != nil {
-				logrus.WithError(fmt.Errorf("%v", thing)).Errorln("panic while handling request")
-			}
-		}()
-
 		start := time.Now()
-
-		// create request and run the handler
 		var req = newGinRequest(gCtx)
-		resp := h(parent, req)
 
-		// get the body first
+		defer func(requestID string) {
+			if thing := recover(); thing != nil {
+				logrus.
+					WithError(fmt.Errorf("%v", thing)).
+					WithField("method", gCtx.Request.Method).
+					WithField("path", gCtx.Request.URL).
+					WithField("request_id", requestID).
+					Errorln("panic while handling request")
+			}
+		}(req.ID())
+
+		resp := h(parent, req)
 		body := resp.Body()
 
-		// write header
 		for k, v := range resp.Header() {
 			for _, h := range v {
 				gCtx.Writer.Header().Add(k, h)
@@ -39,16 +40,14 @@ func WrapGin(parent context.Context, h Handler) gin.HandlerFunc {
 		gCtx.Writer.Header().Add("content-type", resp.ContentType())
 		gCtx.Writer.Header().Add("X-Request-ID", req.ID())
 
-		// write body and status
-		gCtx.Writer.Write(body)
 		gCtx.Writer.WriteHeader(resp.StatusCode())
+		gCtx.Writer.Write(body)
 
-		// access log
 		logrus.
 			WithField("request_id", req.ID()).
 			WithField("duration", time.Since(start)/time.Millisecond).
 			WithField("method", gCtx.Request.Method).
-			WithField("url", gCtx.Request.URL).
+			WithField("path", gCtx.Request.URL).
 			WithField("headers", gCtx.Request.Header).
 			WithField("status", resp.StatusCode()).
 			WithField("resp_body_length", len(body)).
@@ -86,4 +85,8 @@ func (r *ginRequest) ContentType() string {
 
 func (r *ginRequest) Raw() *http.Request {
 	return r.gCtx.Request
+}
+
+func (r *ginRequest) ClientIP() string {
+	return r.gCtx.ClientIP()
 }

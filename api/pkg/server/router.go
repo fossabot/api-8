@@ -41,6 +41,7 @@ func buildRouter(prod bool) http.Handler {
 	v1 := router.Group("/v1")
 	{
 		v1.POST("/auth/register", api.WrapGin(ctx, auth.V1PostRegister))
+		v1.POST("/auth/login", api.WrapGin(ctx, auth.V1PostLogin))
 	}
 	return router
 }

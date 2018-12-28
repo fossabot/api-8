@@ -14,7 +14,6 @@ class CreateTableUserProfile < ActiveRecord::Migration[5.2]
       create unique index unique_email_on_users on user_profile(email);
       create unique index unique_phone_on_users on user_profile(phone);
       create unique index unique_activation_token_on_users on user_profile(activation_token);
-
     SQL
   end
 

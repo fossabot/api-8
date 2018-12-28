@@ -15,6 +15,8 @@ type Request interface {
 	ContentType() string
 	Bind(out interface{}) error
 	Raw() *http.Request
+	Header() http.Header
+	ClientIP() string
 }
 
 type DummyRequest struct {
@@ -61,6 +63,14 @@ func (r *DummyRequest) SetContentType(contentType string) *DummyRequest {
 func (r *DummyRequest) AddHeader(key, val string) *DummyRequest {
 	r.req.Header.Add(key, val)
 	return r
+}
+
+func (r *DummyRequest) Header() http.Header {
+	return r.req.Header
+}
+
+func (r *DummyRequest) ClientIP() string {
+	return "127.0.0.1"
 }
 
 func (r *DummyRequest) SetJSONBody(p interface{}) *DummyRequest {
