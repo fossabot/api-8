@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"context"
 	"errors"
 	"net/http"
 
@@ -53,7 +52,7 @@ func validatePasswordConfirm(password string) func(interface{}) error {
 	}
 }
 
-func V1PostRegister(ctx context.Context, req api.Request) api.Response {
+func V1PostRegister(req api.Request) api.Response {
 	var payload v1PostRegisterPayload
 	if err := req.Bind(&payload); err != nil {
 		return api.InternalServerErrResp(err)

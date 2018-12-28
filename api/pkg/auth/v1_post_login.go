@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/devlover-id/api/pkg/api"
@@ -24,7 +23,7 @@ func (p *v1PostLoginPayload) validate() error {
 	)
 }
 
-func V1PostLogin(ctx context.Context, req api.Request) api.Response {
+func V1PostLogin(req api.Request) api.Response {
 	var payload v1PostLoginPayload
 	if err := req.Bind(&payload); err != nil {
 		return api.InternalServerErrResp(err)

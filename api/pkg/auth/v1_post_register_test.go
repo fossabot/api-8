@@ -6,7 +6,6 @@ import (
 
 	"github.com/devlover-id/api/pkg/api"
 	"github.com/devlover-id/api/pkg/types"
-	"github.com/devlover-id/api/pkg/utils/testhelper"
 	"github.com/icrowley/fake"
 )
 
@@ -22,7 +21,7 @@ func (s *AuthTestSuite) TestPostRegister() {
 	req := api.NewDummyRequest().
 		SetJSONBody(payload)
 
-	resp := V1PostRegister(testhelper.NewContext(), req)
+	resp := V1PostRegister(req)
 	s.Equal(resp.StatusCode(), http.StatusCreated)
 
 	user := types.User{}

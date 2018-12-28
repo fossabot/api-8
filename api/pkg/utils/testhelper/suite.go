@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path"
 
+	"github.com/devlover-id/api/pkg/api"
 	"github.com/devlover-id/api/pkg/database"
 	"github.com/devlover-id/api/pkg/utils/docker"
 	"github.com/sirupsen/logrus"
@@ -71,5 +72,20 @@ func (s *Suite) runDbMigration(dbURL string) {
 
 		// go up one level
 		wd = path.Join(wd, "..")
+	}
+}
+
+type ApiTest struct {
+	Desc       string
+	Request    interface{}
+	ExRespCode int
+	ExRespBody interface{}
+}
+
+func (s *Suite) RunHandlerTC(tcs []ApiTest, handler api.Handler) {
+	for _, tc := range tcs {
+		resp := handler(tc.Request.(api.Request))
+		s.Equal(resp.StatusCode(), tc.ExRespCode)
+		s.RespBodyEqual(resp.Body(), tc.ExRespBody)
 	}
 }

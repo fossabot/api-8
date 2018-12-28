@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"fmt"
 	"io/ioutil"
 	"net"
@@ -11,7 +10,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/devlover-id/api/pkg/utils/testhelper"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -49,7 +47,7 @@ func TestWrapGin(t *testing.T) {
 		{
 			// normal request - response
 			Request: NewDummyRequest().SetContentType(ContentTypeJSON),
-			Handler: func(ctx context.Context, req Request) Response {
+			Handler: func(req Request) Response {
 				resp := JSONResponse(http.StatusOK, map[string]interface{}{
 					"hello": "world",
 				})
@@ -69,7 +67,7 @@ func TestWrapGin(t *testing.T) {
 	}
 
 	for _, tc := range tcs {
-		body, header, statusCode, err := runGin(WrapGin(testhelper.NewContext(), tc.Handler), tc.Request.Raw())
+		body, header, statusCode, err := runGin(WrapGin(tc.Handler), tc.Request.Raw())
 		assert.Nil(t, err)
 		exBody := tc.ExpectedResponse.Body()
 		assert.Equal(t, strings.TrimSpace(string(body)), strings.TrimSpace(string(exBody)))
@@ -83,12 +81,12 @@ func TestHandlePostJson(t *testing.T) {
 	p := struct {
 		Value string `json:"value"`
 	}{}
-	handler := func(ctx context.Context, req Request) Response {
+	handler := func(req Request) Response {
 		req.Bind(&p)
 		return OKResp(nil)
 	}
 	req := NewDummyRequest().SetJSONBody(map[string]interface{}{"value": "something"})
-	runGin(WrapGin(testhelper.NewContext(), handler), req.Raw())
+	runGin(WrapGin(handler), req.Raw())
 
 	assert.Equal(t, p.Value, "something")
 }

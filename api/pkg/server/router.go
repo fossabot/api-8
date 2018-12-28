@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"net/http"
 	"regexp"
 	"time"
@@ -20,10 +19,7 @@ func buildRouter(prod bool) http.Handler {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	ctx := context.Background()
 	router := gin.New()
-
-	//add cors to router
 	router.Use(cors.New(cors.Config{
 		AllowMethods:     []string{"PUT", "PATCH", "POST", "GET", "HEAD"},
 		AllowHeaders:     []string{"Origin"},
@@ -35,24 +31,24 @@ func buildRouter(prod bool) http.Handler {
 		MaxAge: 12 * time.Hour,
 	}))
 
-	router.GET("/", api.WrapGin(ctx, index))
-	router.GET("/ping", api.WrapGin(ctx, ping))
+	router.GET("/", api.WrapGin(index))
+	router.GET("/ping", api.WrapGin(ping))
 
 	v1 := router.Group("/v1")
 	{
-		v1.POST("/auth/register", api.WrapGin(ctx, auth.V1PostRegister))
-		v1.POST("/auth/login", api.WrapGin(ctx, auth.V1PostLogin))
+		v1.POST("/auth/register", api.WrapGin(auth.V1PostRegister))
+		v1.POST("/auth/login", api.WrapGin(auth.V1PostLogin))
 	}
 	return router
 }
 
-func index(ctx context.Context, req api.Request) api.Response {
+func index(req api.Request) api.Response {
 	return api.OKResp(map[string]string{
 		"hello": "world",
 	})
 }
 
-func ping(ctx context.Context, req api.Request) api.Response {
+func ping(req api.Request) api.Response {
 	return api.OKResp(map[string]string{
 		"message": "pong",
 	})

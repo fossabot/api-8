@@ -1,7 +1,7 @@
 package api
 
 import (
-	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -11,12 +11,16 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var handlerTimeout = 15 * time.Second
+var errHandlerTimeout = errors.New("handler timeout")
+
 // WrapGin wraps a Handler and turns it into gin compatible handler
 // This method should be called with a fresh ctx
-func WrapGin(parent context.Context, h Handler) gin.HandlerFunc {
+func WrapGin(h Handler) gin.HandlerFunc {
 	return func(gCtx *gin.Context) {
 		start := time.Now()
-		var req = newGinRequest(gCtx)
+		req := newGinRequest(gCtx)
+		gCtx.Writer.Header().Add("X-Request-ID", req.ID())
 
 		defer func(requestID string) {
 			if thing := recover(); thing != nil {
@@ -29,17 +33,27 @@ func WrapGin(parent context.Context, h Handler) gin.HandlerFunc {
 			}
 		}(req.ID())
 
-		resp := h(parent, req)
-		body := resp.Body()
+		resp, err := runHandlerWithTimeout(h, req, handlerTimeout)
+		if err == errHandlerTimeout {
+			logrus.WithError(err).
+				WithField("request_id", req.ID()).
+				WithField("method", gCtx.Request.Method).
+				WithField("path", gCtx.Request.URL).
+				Errorln("handler timeout")
 
+			gCtx.Writer.Header().Add("content-type", "application/json")
+			gCtx.Writer.WriteHeader(http.StatusInternalServerError)
+			gCtx.Writer.Write([]byte(`{"message": "server timeout"}`))
+			return
+		}
+
+		body := resp.Body()
+		gCtx.Writer.Header().Add("content-type", resp.ContentType())
 		for k, v := range resp.Header() {
 			for _, h := range v {
 				gCtx.Writer.Header().Add(k, h)
 			}
 		}
-		gCtx.Writer.Header().Add("content-type", resp.ContentType())
-		gCtx.Writer.Header().Add("X-Request-ID", req.ID())
-
 		gCtx.Writer.WriteHeader(resp.StatusCode())
 		gCtx.Writer.Write(body)
 
@@ -50,8 +64,23 @@ func WrapGin(parent context.Context, h Handler) gin.HandlerFunc {
 			WithField("path", gCtx.Request.URL).
 			WithField("headers", gCtx.Request.Header).
 			WithField("status", resp.StatusCode()).
-			WithField("resp_body_length", len(body)).
+			WithField("content_length", len(body)).
 			Infoln("finished handling request")
+	}
+}
+
+func runHandlerWithTimeout(h Handler, req Request, timeout time.Duration) (Response, error) {
+	doneChan := make(chan Response, 1)
+	go func() {
+		doneChan <- h(req)
+	}()
+
+	var resp Response
+	select {
+	case <-time.NewTimer(handlerTimeout).C:
+		return nil, errHandlerTimeout
+	case resp = <-doneChan:
+		return resp, nil
 	}
 }
 
