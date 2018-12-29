@@ -37,12 +37,12 @@ end
 namespace :deploy do
   require 'json'
 
-  if ! File.exists? 'config.json'
-    raise 'no config.json exists'
-  end
-
   desc 'Run migrations on staging database'
   task :staging do
+    if ! File.exists? 'config.json'
+      raise 'no config.json exists'
+    end
+
     conf = JSON.parse(File.read('config.json'))['staging']
     migrate(conf['ssh_user'], conf['ip'], conf['db_user'], conf['db_password'], conf['db_name'])
   end
