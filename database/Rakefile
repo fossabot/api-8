@@ -13,6 +13,8 @@ ActiveRecordMigrations.configure do |c|
 end
 ActiveRecordMigrations.load_tasks
 
+# run migrations to remote server using ssh tunnelling.
+# this method assumes that you have passwordless ssh to remote server.
 def migrate(ssh_user, ssh_ip, db_user, db_password, db_name)
   require 'net/ssh/gateway'
 
