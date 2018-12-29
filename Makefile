@@ -15,3 +15,6 @@ test-api: run-migration
 	cd api \
 		&& go build -o out/devlover-api github.com/devlover-id/api/cmd/devlover-api \
 		&& go test -v -cover ./...
+
+migrate-staging:
+	cd database && rbenv exec rake deploy:staging

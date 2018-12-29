@@ -1,0 +1,16 @@
+{
+    "staging": {
+        "ip": "",
+        "ssh_user": "",
+        "db_user": "",
+        "db_password": "",
+        "db_name": ""
+    },
+    "production": {
+        "ip": "",
+        "ssh_user": "",
+        "db_user": "",
+        "db_password": "",
+        "db_name": ""
+    },
+}

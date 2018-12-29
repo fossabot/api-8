@@ -12,3 +12,38 @@ ActiveRecordMigrations.configure do |c|
   c.migrations_paths = ['migrations']
 end
 ActiveRecordMigrations.load_tasks
+
+def migrate(ssh_user, ssh_ip, db_user, db_password, db_name)
+  require 'net/ssh/gateway'
+
+  gateway = Net::SSH::Gateway.new(ssh_ip, ssh_user)
+  local_port = gateway.open('127.0.0.1', 5432, 2345)
+
+  env = {
+    'DB_URL' => "postgres://#{db_user}:#{db_password}@127.0.0.1:#{local_port}/#{db_name}?sslmode=disable"
+  }
+  system(
+    env,
+    'rbenv exec rake db:migrate'
+  )
+  system(
+    env,
+    'rbenv exec rake db:version'
+  )
+
+  gateway.close(local_port)
+end
+
+namespace :deploy do
+  require 'json'
+
+  if ! File.exists? 'config.json'
+    raise 'no config.json exists'
+  end
+
+  desc 'Run migrations on staging database'
+  task :staging do
+    conf = JSON.parse(File.read('config.json'))['staging']
+    migrate(conf['ssh_user'], conf['ip'], conf['db_user'], conf['db_password'], conf['db_name'])
+  end
+end
