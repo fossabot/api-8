@@ -28,3 +28,7 @@ func InternalServerErrResp(err error) Response {
 func ValidationErrResp(errors map[string]string) Response {
 	return JSONResponse(http.StatusBadRequest, errors)
 }
+
+func CodeResp(code int) {
+
+}

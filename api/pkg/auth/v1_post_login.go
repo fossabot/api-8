@@ -35,14 +35,14 @@ func V1PostLogin(req api.Request) api.Response {
 	token, err := login(payload.Username, payload.Password)
 	if err == errNilUserPassword {
 		return api.ValidationErrResp(map[string]string{
-			"password": "user tidak memiliki password",
+			"password": "user belum memiliki password",
 		})
 	}
 	if err != nil {
 		return api.InternalServerErrResp(err)
 	}
 	if len(token) == 0 {
-		return api.JSONResponse(http.StatusForbidden, nil)
+		return api.CodeOnlyResp(http.StatusForbidden)
 	}
 
 	return api.JSONResponse(http.StatusOK, map[string]string{

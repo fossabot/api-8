@@ -8,8 +8,6 @@ run-api:
 	cd api && go build -o out/devlover-api github.com/devlover-id/api/cmd/devlover-api
 	./api/out/devlover-api
 
-test: test-db test-api
-
 test-db: run-migration
 	cd database && rbenv exec rake db:migrate VERSION=0
 

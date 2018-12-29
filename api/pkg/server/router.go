@@ -7,6 +7,7 @@ import (
 
 	"github.com/devlover-id/api/pkg/api"
 	"github.com/devlover-id/api/pkg/auth"
+	"github.com/devlover-id/api/pkg/oauth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -21,10 +22,10 @@ func buildRouter(prod bool) http.Handler {
 
 	router := gin.New()
 	router.Use(cors.New(cors.Config{
-		AllowMethods:     []string{"PUT", "PATCH", "POST", "GET", "HEAD"},
-		AllowHeaders:     []string{"Origin"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: false,
+		AllowMethods:     []string{http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodGet},
+		AllowHeaders:     []string{"Origin", "Authorization"},
+		ExposeHeaders:    []string{},
+		AllowCredentials: true,
 		AllowOriginFunc: func(origin string) bool {
 			return originCheck.MatchString(origin)
 		},
@@ -38,6 +39,7 @@ func buildRouter(prod bool) http.Handler {
 	{
 		v1.POST("/auth/register", api.WrapGin(auth.V1PostRegister))
 		v1.POST("/auth/login", api.WrapGin(auth.V1PostLogin))
+		v1.GET("/oauth/github", api.WrapGin(oauth.V1GetGithub))
 	}
 	return router
 }

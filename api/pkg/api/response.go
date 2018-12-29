@@ -51,6 +51,32 @@ func (r *jsonResponse) ContentType() string {
 	return ContentTypeJSON
 }
 
+type codeResponse struct {
+	code int
+}
+
+func CodeOnlyResp(code int) Response {
+	return &codeResponse{
+		code: code,
+	}
+}
+
+func (r *codeResponse) StatusCode() int {
+	return r.code
+}
+
+func (r *codeResponse) Body() []byte {
+	return nil
+}
+
+func (r *codeResponse) Header() http.Header {
+	return nil
+}
+
+func (r *codeResponse) ContentType() string {
+	return ""
+}
+
 type dummyResponse struct {
 	statusCode  int
 	body        []byte

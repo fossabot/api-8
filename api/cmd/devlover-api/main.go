@@ -3,21 +3,20 @@ package main
 import (
 	"time"
 
-	"github.com/caarlos0/env"
+	"github.com/devlover-id/api/pkg/config"
 	"github.com/devlover-id/api/pkg/database"
 	"github.com/devlover-id/api/pkg/server"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	var conf config
-	if err := env.Parse(&conf); err != nil {
+	if err := config.ParseEnv(); err != nil {
 		logrus.WithError(err).Fatalln("failed to parse environment variables")
 	}
 
 	if err := database.Configure(&database.Config{
 		Master: &database.DBConf{
-			URL:          conf.DbURL,
+			URL:          config.DbURL(),
 			ConnLifetime: 60 * time.Minute,
 			MaxIdleConns: 2,
 			MaxOpenConns: 5,
@@ -26,7 +25,8 @@ func main() {
 		logrus.WithError(err).Fatalln("failed to configure database")
 	}
 
-	if err := server.Run(conf.ListenAddr, conf.Production); err != nil {
+	logrus.WithField("listen_addr", config.ListenAddr()).WithField("production", config.Production()).Infoln("starting api server")
+	if err := server.Run(config.ListenAddr(), config.Production()); err != nil {
 		logrus.WithField("msg", err.Error()).Warnln("server died")
 	}
 }
