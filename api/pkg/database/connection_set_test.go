@@ -140,23 +140,23 @@ func TestConnectionSet_LoopConnStatusChanges(t *testing.T) {
 	go cs.loop()
 
 	// at the beginning there are 2 active slaves
-	time.Sleep(5 * time.Millisecond)
+	time.Sleep(10 * time.Millisecond)
 	assert.Len(t, cs.activeSlaves, 2, "all connected slaves must be in active slaves")
 
 	// then 1 of them died
 	slaveConns[0].connected = false
-	time.Sleep(5 * time.Millisecond)
+	time.Sleep(10 * time.Millisecond)
 	assert.Len(t, cs.activeSlaves, 1, "should just have 1 active slaves")
 
 	// the last 1 dies too :(
 	slaveConns[1].connected = false
-	time.Sleep(5 * time.Millisecond)
+	time.Sleep(10 * time.Millisecond)
 	assert.Len(t, cs.activeSlaves, 0, "should just have 0 active slaves")
 
 	// then all of them alive again
 	slaveConns[0].connected = true
 	slaveConns[1].connected = true
-	time.Sleep(5 * time.Millisecond)
+	time.Sleep(10 * time.Millisecond)
 	assert.Len(t, cs.activeSlaves, 2, "all slaves should be connected")
 }
 
