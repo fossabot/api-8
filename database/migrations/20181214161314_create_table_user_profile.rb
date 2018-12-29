@@ -6,7 +6,7 @@ class CreateTableUserProfile < ActiveRecord::Migration[5.2]
         activation_token varchar(100) not null,
         activation_token_expires_at timestamptz not null default now() + interval '15 minutes',
         name varchar(500) not null,
-        email varchar(500) not null,
+        email varchar(500),
         address varchar(2000),
         phone varchar(50)
       );
