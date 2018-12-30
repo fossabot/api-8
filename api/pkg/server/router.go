@@ -7,6 +7,7 @@ import (
 
 	"github.com/devlover-id/api/pkg/api"
 	"github.com/devlover-id/api/pkg/auth"
+	"github.com/devlover-id/api/pkg/config"
 	"github.com/devlover-id/api/pkg/oauth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -27,6 +28,9 @@ func buildRouter(prod bool) http.Handler {
 		ExposeHeaders:    []string{},
 		AllowCredentials: true,
 		AllowOriginFunc: func(origin string) bool {
+			if !config.Production() {
+				return true
+			}
 			return originCheck.MatchString(origin)
 		},
 		MaxAge: 12 * time.Hour,
